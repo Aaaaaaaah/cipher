@@ -107,7 +107,7 @@ def anneal(times=1000,back=None,starter=1):
         rules.append(temp_rule)
         Es.append(temp_E)
         if i!=0:
-            print "Step : %i\t\tE : %d"%(i,temp_E)
+            print "Step : %i\tE : %d"%(i,temp_E)
         if temp_E>EM:
             EM=temp_E
             ruleM=temp_rule
