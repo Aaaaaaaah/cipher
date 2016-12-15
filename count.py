@@ -119,5 +119,9 @@ if __name__=="__main__":
     parser.add_argument('--times','-t',dest='times',type=int,default=1000,help='times to anneal')
     parser.add_argument('--file','-f',dest='file',required=True,help='file to store',)
     args = parser.parse_args()
-    ans=anneal(times=args.times,back=json.load(open(args.file,"r")))
+    try:
+        back=json.load(open(args.file,"r"))
+    except IOError:
+        back=None
+    ans=anneal(times=args.times,back=back)
     json.dump(ans,open(args.file,"w"))
