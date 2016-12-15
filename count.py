@@ -73,7 +73,7 @@ def energy_func(data,rule=None):
         energy+=multi_order[word]
     return energy
 
-def anneal(times=1000,back=None):
+def anneal(times=1000,back=None,starter=1):
     if back==None:
         data=get_content(this_file_name)
         rule=get_init(this_file_name)
@@ -92,7 +92,7 @@ def anneal(times=1000,back=None):
         ruleM=rules[Es.index(EM)]
     try:
       for i in range(times):
-        T=(1-1.*i/times)*word_T
+        T=(1-1.*i/times)*starter*word_T
         Ts=[math.exp((j-EP)/T) for j in Es]
         Tsum = sum(Ts)
         Ts=map(lambda x:x/Tsum,Ts)
@@ -119,10 +119,11 @@ if __name__=="__main__":
     parser = argparse.ArgumentParser(description='cipher')
     parser.add_argument('--times','-t',dest='times',type=int,default=1000,help='times to anneal')
     parser.add_argument('--file','-f',dest='file',required=True,help='file to store',)
+    parser.add_argument('--starter','-s',dest='starter',type=float,default=1.)
     args = parser.parse_args()
     try:
         back=json.load(open(args.file,"r"))
     except IOError:
         back=None
-    ans=anneal(times=args.times,back=back)
+    ans=anneal(times=args.times,back=back,starter=args.starter)
     json.dump(ans,open(args.file,"w"))
