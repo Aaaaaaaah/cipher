@@ -68,6 +68,7 @@ def energy_func(data,rule=None):
     if rule!=None:
         data=replace_str(data,rule)
     energy=0
+    data=str(data)
     for pos, word in ac_auto.iter(data):
         energy+=multi_order[word]
     return energy
