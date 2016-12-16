@@ -6,6 +6,30 @@ import ahocorasick
 import argparse
 from mpi4py import MPI
 
+# file
+this_file_name="ciphertext"
+
+# letter => mat_poss
+letter_T=2.0
+base_order="etaoinhsrdlucmwgfypbkvxjzq"
+base_param=[1174913,862434,756008,716854,641296,628461,581186,579195,545403,425327,395178,272732,238199,237851,218206,206612,198625,187488,170499,143028,92313,87447,17096,15347,9200,8102]
+base_mat=[[math.exp(-(math.log(1.*base_param[i]/base_param[j]))**2/letter_T**2) for j in range(26)]for i in range(26)]
+for i in range(26):
+    base_mat[i][i]=0
+flatten=sum(base_mat,[])
+flatten_sum=sum(flatten)
+mat_poss=map(lambda x:x/flatten_sum,flatten)
+
+# word => ac_auto
+word_T=10000000000
+ddict=json.load(open("wordlist/ddict","r"))
+multi_order={i[0]:i[1]*2**len(i[0]) for i in ddict.iteritems()}
+ac_auto = ahocorasick.Automaton()
+for word in multi_order.iterkeys():
+    i=str(word)
+    ac_auto.add_word(i,i)
+ac_auto.make_automaton()
+
 def get_content(file_name):
     content_file=open(file_name,"r")
     data=content_file.read()
@@ -91,34 +115,6 @@ def anneal(times=1000,back=None,starter=1):
     return [replace_str(data,ruleM),rules,Es]
 
 if __name__=="__main__":
-    global this_file
-    global mat_poss
-    global ac_auto
-
-    # file
-    this_file_name="ciphertext"
-
-    # letter => mat_poss
-    letter_T=2.0
-    base_order="etaoinhsrdlucmwgfypbkvxjzq"
-    base_param=[1174913,862434,756008,716854,641296,628461,581186,579195,545403,425327,395178,272732,238199,237851,218206,206612,198625,187488,170499,143028,92313,87447,17096,15347,9200,8102]
-    base_mat=[[math.exp(-(math.log(1.*base_param[i]/base_param[j]))**2/letter_T**2) for j in range(26)]for i in range(26)]
-    for i in range(26):
-        base_mat[i][i]=0
-    flatten=sum(base_mat,[])
-    flatten_sum=sum(flatten)
-    mat_poss=map(lambda x:x/flatten_sum,flatten)
-
-    # word => ac_auto
-    word_T=10000000000
-    ddict=json.load(open("wordlist/ddict","r"))
-    multi_order={i[0]:i[1]*2**len(i[0]) for i in ddict.iteritems()}
-    ac_auto = ahocorasick.Automaton()
-    for word in multi_order.iterkeys():
-        i=str(word)
-        ac_auto.add_word(i,i)
-    ac_auto.make_automaton()
-
     global comm
     global comm_rank
     global comm_size
