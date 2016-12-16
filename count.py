@@ -106,7 +106,7 @@ def anneal(times=1000,back=None,starter=1):
         rules+=comm.allgather(temp_rule)
         Es+=comm.allgather(temp_E)
         if i!=0:
-            print "Step : %i\tE : %d"%(i,temp_E)
+            print "Step ( %%%dd ) : %%i\tE : %%d"%len(str(comm_size))%(comm_rank,i,temp_E)
         if temp_E>EM:
             EM=temp_E
             ruleM=temp_rule
