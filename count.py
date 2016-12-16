@@ -92,7 +92,7 @@ def anneal(times=1000,back=None,starter=1):
     try:
       for i in range(times):
         x=1.*i/times
-        T=(      math.cos(-x*2.*math.pi * 5)**2       +1./times)*starter*word_T
+        T=(      math.cos(-x*2.*math.pi * special_param)**2       +1./times)*starter*word_T
         Ts=[math.exp((j-EP)/T) for j in Es]
         Tsum = sum(Ts)
         Ts=map(lambda x:x/Tsum,Ts)
@@ -130,8 +130,12 @@ if __name__=="__main__":
     parser = argparse.ArgumentParser(description='cipher')
     parser.add_argument('--times','-t',dest='times',type=int,default=1000,help='times to anneal')
     parser.add_argument('--file','-f',dest='file',required=True,help='file to store',)
+    parser.add_argument('--param','-p',dest='param',default=3,type=float,help='param in cos')
     parser.add_argument('--starter','-s',dest='starter',type=float,default=1.)
     args = parser.parse_args()
+
+    global special_param
+    special_param = args.param
 
     try:
         back=json.load(open(args.file,"r"))
