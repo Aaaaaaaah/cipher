@@ -91,7 +91,8 @@ def anneal(times=1000,back=None,starter=1):
         ruleM=rules[Es.index(EM)]
     try:
       for i in range(times):
-        T=(1-1.*i/times)*starter*word_T
+        x=1.*i/times
+        T=(      math.cos(-x*2.*math.pi * 3)**2       +1./times)*starter*word_T
         Ts=[math.exp((j-EP)/T) for j in Es]
         Tsum = sum(Ts)
         Ts=map(lambda x:x/Tsum,Ts)
@@ -103,13 +104,16 @@ def anneal(times=1000,back=None,starter=1):
         while temp_rule in rules:
             temp_rule=mutate_order(temp_rule)
         temp_E=energy_func(data,temp_rule)
-        rules+=comm.allgather(temp_rule)
-        Es+=comm.allgather(temp_E)
+        rules_p=comm.allgather(temp_rule)
+        Es_p=comm.allgather(temp_E)
+        rules+=rules_p
+        Es+=Es_p
         if i!=0:
             print "Step ( %%%dd ) : %%i\tE : %%d"%len(str(comm_size))%(comm_rank,i,temp_E)
-        if temp_E>EM:
-            EM=temp_E
-            ruleM=temp_rule
+        for j in range(comm_size):
+            if Es_p[i]>EM:
+                EM=Es_p[i]
+                ruleM=rules_p[i]
     except:
         traceback.print_exc()
     return [replace_str(data,ruleM),rules,Es]
