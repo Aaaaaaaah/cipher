@@ -111,9 +111,9 @@ def anneal(times=1000,back=None,starter=1):
         if i!=0:
             print "Step ( %%%dd ) : %%i\tE : %%d"%len(str(comm_size))%(comm_rank,i,temp_E)
         for j in range(comm_size):
-            if Es_p[i]>EM:
-                EM=Es_p[i]
-                ruleM=rules_p[i]
+            if Es_p[j]>EM:
+                EM=Es_p[j]
+                ruleM=rules_p[j]
     except:
         traceback.print_exc()
     return [replace_str(data,ruleM),rules,Es]
