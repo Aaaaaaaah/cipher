@@ -92,7 +92,7 @@ def anneal(times=1000,back=None,starter=1):
     try:
       for i in range(times):
         x=1.*i/times
-        T=(      math.cos(-x*2.*math.pi * 4)**2       +1./times)*starter*word_T
+        T=(      math.cos(-x*2.*math.pi * 5)**2       +1./times)*starter*word_T
         Ts=[math.exp((j-EP)/T) for j in Es]
         Tsum = sum(Ts)
         Ts=map(lambda x:x/Tsum,Ts)
