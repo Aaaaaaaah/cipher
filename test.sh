@@ -1,4 +1,5 @@
-for i in `seq 5 6`
+echo $1 $2
+for i in `seq $1 $2`
 do
     mpirun -host node1,node2,node3 -ppn 36 python count.py -f db$i.1 -p 1
     mpirun -host node1,node2,node3 -ppn 36 python count.py -f db$i.2 -p 2
